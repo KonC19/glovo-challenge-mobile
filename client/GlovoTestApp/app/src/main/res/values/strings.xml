@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GlovoTestApp</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="picker_title">Couldn\'t find location. Pick a city:</string>
+
+    <string name="country_code_text">Country code: %1$s</string>
+    <string name="currency_text">Currency: %1$s</string>
+    <string name="is_busy">Is busy: %1$s</string>
+    <string name="is_busy_yes">Yes</string>
+    <string name="is_busy_no">No</string>
+</resources>
