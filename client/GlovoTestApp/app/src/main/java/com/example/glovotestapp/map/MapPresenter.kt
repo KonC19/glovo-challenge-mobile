@@ -1,40 +1,23 @@
-package com.example.glovotestapp
+package com.example.glovotestapp.map
 
 import com.example.glovotestapp.data.City
-import com.example.glovotestapp.data.Country
 import com.example.glovotestapp.data.MapRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.PolyUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 
 
-class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.View) : MapContract.Presenter {
+class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.View) :
+    MapContract.Presenter {
 
     private val compositeDisposable: CompositeDisposable
 
     init {
         mapView.presenter = this
         compositeDisposable = CompositeDisposable()
-    }
-
-    override fun loadCountries() {
-        compositeDisposable.add(
-            mapRepository.getCountries()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<Country>>() {
-                    override fun onSuccess(value: List<Country>) {
-                        mapView.onCountriesLoaded(value)
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-                }))
-
     }
 
     override fun checkLocation(latitude: Double, longitude: Double) {
@@ -82,7 +65,7 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
                 }))
     }
 
-    override fun showMarkersForCities() {
+    override fun loadMarkersForCities() {
         compositeDisposable.add(
             mapRepository.getCities()
                 .subscribeOn(Schedulers.io())

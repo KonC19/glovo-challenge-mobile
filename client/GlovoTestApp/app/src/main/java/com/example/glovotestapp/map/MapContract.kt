@@ -1,15 +1,12 @@
-package com.example.glovotestapp
+package com.example.glovotestapp.map
 
+import com.example.glovotestapp.BasePresenter
+import com.example.glovotestapp.BaseView
 import com.example.glovotestapp.data.City
-import com.example.glovotestapp.data.Country
 import com.google.android.gms.maps.model.LatLng
 
 interface MapContract {
     interface View : BaseView<Presenter> {
-
-        fun onCountriesLoaded(countries: List<Country>)
-
-        fun onCitiesLoaded(countries: List<City>)
 
         fun showCityPicker(countries: List<City>)
 
@@ -22,14 +19,12 @@ interface MapContract {
 
     interface Presenter : BasePresenter {
 
-        fun loadCountries()
-
         fun checkLocation(latitude: Double, longitude: Double)
 
         fun loadCitiesForPicker()
 
         fun getCityDetails(cityCode: String)
 
-        fun showMarkersForCities()
+        fun loadMarkersForCities()
     }
 }
