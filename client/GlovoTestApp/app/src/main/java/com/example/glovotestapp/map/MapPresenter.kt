@@ -2,16 +2,15 @@ package com.example.glovotestapp.map
 
 import com.example.glovotestapp.data.City
 import com.example.glovotestapp.data.MapRepository
+import com.example.glovotestapp.util.schedulers.BaseSchedulerProvider
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.PolyUtil
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
-class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.View) :
+class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.View, val schedulerProvider : BaseSchedulerProvider) :
     MapContract.Presenter {
 
     private val compositeDisposable: CompositeDisposable
@@ -24,8 +23,8 @@ class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.Vi
     override fun checkLocation(latitude: Double, longitude: Double) {
         compositeDisposable.add(
             mapRepository.getCities()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .map {
                     return@map  it.sortedBy { city ->
                         city.countryCode
@@ -51,8 +50,8 @@ class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.Vi
     override fun loadCitiesForPicker() {
         compositeDisposable.add(
             mapRepository.getCities()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .map {
                     return@map  it.sortedBy { city ->
                         city.countryCode
@@ -72,8 +71,8 @@ class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.Vi
     override fun loadMarkersForCities() {
         compositeDisposable.add(
             mapRepository.getCities()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .subscribeWith(object : DisposableSingleObserver<List<City>>() {
                     override fun onSuccess(value: List<City>) {
                         mapView.showMapMarkers(getCitiesCoordinates(value))
@@ -102,8 +101,8 @@ class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.Vi
     override fun getCityDetails(cityCode: String) {
         compositeDisposable.add(
             mapRepository.getCityDetails(cityCode)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .subscribeWith(object : DisposableSingleObserver<City>() {
                     override fun onSuccess(value: City) {
                         mapView.onCityDetailsLoaded(value)

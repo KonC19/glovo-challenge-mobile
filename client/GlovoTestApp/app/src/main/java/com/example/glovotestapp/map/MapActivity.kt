@@ -56,7 +56,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, MapContract.View {
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        presenter = MapPresenter(Injection.provideTasksRepository(), this)
+        presenter = MapPresenter(Injection.provideTasksRepository(), this, Injection.provideSchedulerProvider())
 
     }
 

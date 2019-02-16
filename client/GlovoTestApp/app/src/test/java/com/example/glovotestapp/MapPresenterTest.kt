@@ -4,9 +4,9 @@ import com.example.glovotestapp.data.City
 import com.example.glovotestapp.data.MapRepository
 import com.example.glovotestapp.map.MapContract
 import com.example.glovotestapp.map.MapPresenter
+import com.example.glovotestapp.util.schedulers.BaseSchedulerProvider
+import com.example.glovotestapp.util.schedulers.ImmediateSchedulerProvider
 import io.reactivex.Single
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -32,24 +32,27 @@ class MapPresenterTest {
 
     private lateinit var cities: MutableList<City>
 
+    private lateinit var mSchedulerProvider: BaseSchedulerProvider
+
     @Before
     fun setupMapsPresenter() {
         MockitoAnnotations.initMocks(this)
 
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler -> Schedulers.io() }
+//        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler -> Schedulers.trampoline() }
+        mSchedulerProvider = ImmediateSchedulerProvider()
 
-        mapsPresenter = MapPresenter(mapsRepository, mapsView)
+        mapsPresenter = MapPresenter(mapsRepository, mapsView, mSchedulerProvider)
 
         cities = mutableListOf(
+            City("ALC", "ES", "Alicante", "EUR", true, false, "CET", "es", listOf("u{}hFfsaBsDNaVkb@iDwc@zA]k@uXZeIzL{MpJdLd]dg@k@hM}NlRwArEe@`Ke@`KCbD")),
             City("BIL", "ES", "Bilbao", "EUR", true, false, "CET", "es", listOf("k_agG`c}PgE_QnKmdAgNwXjIuHzUb^bB|ZkHtu@")),
-            City("CRE", "ES", "Ciudad Real", "EUR", true, false, "CET", "es", listOf("ac~lFvr`W`JxcCtH|`AjhAnc@tc@qGpi@gJhr@sqAxIclCKocCuz@alCsf@jb@oP|i@wLPsHhw@j`@vg@|AhtAuh@ny@aImi@w[xJt@pUa]uW")),
-            City("ALC", "Alicante", "Bilbao", "EUR", true, false, "CET", "es", listOf("u{}hFfsaBsDNaVkb@iDwc@zA]k@uXZeIzL{MpJdLd]dg@k@hM}NlRwArEe@`Ke@`KCbD"))
+            City("CRE", "ES", "Ciudad Real", "EUR", true, false, "CET", "es", listOf("ac~lFvr`W`JxcCtH|`AjhAnc@tc@qGpi@gJhr@sqAxIclCKocCuz@alCsf@jb@oP|i@wLPsHhw@j`@vg@|AhtAuh@ny@aImi@w[xJt@pUa]uW"))
         )
     }
 
     @Test fun createPresenter_setsThePresenterToView() {
         // Get a reference to the class under test
-        mapsPresenter = MapPresenter(mapsRepository, mapsView)
+        mapsPresenter = MapPresenter(mapsRepository, mapsView, mSchedulerProvider)
 
         // Then the presenter is set to the view
         verify(mapsView).presenter = mapsPresenter
@@ -62,9 +65,10 @@ class MapPresenterTest {
         verify(mapsView).showCityPicker(cities)
     }
 
-    @Test fun loadCityDetailsFromRepository_LoadIntoView() {
-//
-//        `when`(mapsRepository.getCityDetails("BIL")).thenReturn(Single.just(cities[0]))
+    @Test fun loadBilbaoDetailsFromRepository_LoadIntoView() {
+        `when`(mapsRepository.getCityDetails("BIL")).thenReturn(Single.just(cities[1]))
+        mapsPresenter.getCityDetails("BIL")
 
+        verify(mapsView).onCityDetailsLoaded(cities[1])
     }
 }
