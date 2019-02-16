@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
-class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.View) :
+class MapPresenter(val mapRepository: MapRepository, var mapView: MapContract.View) :
     MapContract.Presenter {
 
     private val compositeDisposable: CompositeDisposable
@@ -43,7 +43,7 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        mapView.showError(e.message)
                     }
                 }))
     }
@@ -64,7 +64,7 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        mapView.showError(e.message)
                     }
                 }))
     }
@@ -80,7 +80,7 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        mapView.showError(e.message)
                     }
                 }))
     }
@@ -110,7 +110,7 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        mapView.showError(e.message)
                     }
                 }))
     }

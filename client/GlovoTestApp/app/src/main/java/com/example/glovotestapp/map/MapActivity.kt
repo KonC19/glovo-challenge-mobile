@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.example.glovotestapp.Injection
 import com.example.glovotestapp.R
 import com.example.glovotestapp.data.City
@@ -206,6 +207,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, MapContract.View {
         } else {
             bottomSheetBehavior.peekHeight = 0
         }
+    }
+
+    override fun showError(error: String?) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
     }
 
     public override fun onStart() {

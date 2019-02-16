@@ -8,13 +8,15 @@ import com.google.android.gms.maps.model.LatLng
 interface MapContract {
     interface View : BaseView<Presenter> {
 
-        fun showCityPicker(countries: List<City>)
+        fun showCityPicker(cities: List<City>)
 
         fun showPolygonsForCity(city: City)
 
         fun onCityDetailsLoaded(city: City)
 
         fun showMapMarkers(citiesCoordinates: HashMap<City, LatLng>)
+
+        fun showError(error: String?)
     }
 
     interface Presenter : BasePresenter {
