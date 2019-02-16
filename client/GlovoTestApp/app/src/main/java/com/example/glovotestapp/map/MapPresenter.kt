@@ -8,6 +8,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 
 class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.View) :
@@ -25,14 +26,16 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
             mapRepository.getCities()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    return@map  it.sortedBy { city ->
+                        city.countryCode
+                    }
+                }
                 .subscribeWith(object : DisposableSingleObserver<List<City>>() {
                     override fun onSuccess(value: List<City>) {
                         val city = getCityFromLocation(value, latitude, longitude)
                         if (city == null) {
-                            val citiesByCountry = value.sortedBy {
-                                it.countryCode
-                            }
-                            mapView.showCityPicker(citiesByCountry)
+                            mapView.showCityPicker(value)
                         } else {
                             getCityDetails(city.code)
                             mapView.showPolygonsForCity(city)
@@ -50,13 +53,14 @@ class MapPresenter(val mapRepository: MapRepository, val mapView: MapContract.Vi
             mapRepository.getCities()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    return@map  it.sortedBy { city ->
+                        city.countryCode
+                    }
+                }
                 .subscribeWith(object : DisposableSingleObserver<List<City>>() {
                     override fun onSuccess(value: List<City>) {
-
-                        val citiesByCountry = value.sortedBy {
-                            it.countryCode
-                        }
-                        mapView.showCityPicker(citiesByCountry)
+                        mapView.showCityPicker(value)
                     }
 
                     override fun onError(e: Throwable) {
